@@ -1,1 +1,0 @@
-# Compound Literals (Bileşik sabitler)
