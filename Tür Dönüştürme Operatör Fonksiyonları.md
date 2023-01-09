@@ -27,15 +27,6 @@ int main()
 
 > Peki ben bir fonksiyon bildirsem - Bir sınıf türünden nesneyi bir başka türe dönüştürmek için kullanacağımız fonksiyonlardır. Yani derleyici durumdan vazife çıkartıp bu fonksionlara çağrı yaparak sınıf türünden nesneyi başka bir türe dönüştürme olanağına sahip olacak. 
 
-**Bir notu hatırlayalım:**
-
-> Normale mümkün olmayan bir dönüşüm eğer bir fonksiyon bildirimiyle, derleyicinin o fonksiyona çağrı yapması halinde gerçekleştiriliyorsa böyle dönüşümlere user-defined conversion deniliyordu. Şimdiye kadar biz user defined conversion un conversion constructorlar ile yapılcabileceğini gördük. Yani derleyici sınıfın conversion constructor ına çağrı yaparak sınıf türünden olmayan bir değeri sınıf türüne dönüştürebiliyordu. 
-
-
-
-- Şimdi user defined conversion ın yapılcabileceği ikinci bir yol öğrenceğiz. Sınıf türünden olan bir nesnenin başka bir türe dönüştürülmesini sınıfın tür dönüştürme operator fonksiyonları ile gerekleştirebiliriz. 
-
-
 
 **Bir örnek:**
 
