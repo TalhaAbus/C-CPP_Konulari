@@ -792,22 +792,54 @@ int main()
 
 # what is inline variable
 
+- In C++, an inline variable is a variable declared with the inline keyword. It instructs the compiler to replace all the references to the variable with its actual value, similar to an inline function. This can result in improved performance and smaller code size, as it avoids the overhead of a function call or a variable lookup.
 
+- Inline variables were introduced in C++17 and can be used to declare both static and non-static data members of a class. An inline variable must have a definition in the header file, and it can be initialized using an initializer or default initialization.
 
+- Here's an example of an inline variable declaration:
 
+```CPP
+// header file
 
+class MyClass {
+public:
+    inline static int myInt = 42;   // an inline static data member
+    inline float myFloat;           // an inline non-static data member
 
+    MyClass() : myFloat(3.14f) {}   // constructor definition
+};
 
+// source file
 
+int main() {
+    MyClass obj;
+    int result = MyClass::myInt * obj.myFloat;  // the reference to myInt and myFloat is replaced with their actual values
+    return 0;
+}
 
+```
 
+# what is friend keyword
 
+- In C++, the friend keyword is used to grant access to private or protected class members to functions or classes that are not members of the class. When a function or a class is declared as a friend of a class, it is given permission to access the private and protected members of the class as if they were its own members.
 
+- The friend keyword is often used when implementing operator overloading in C++, allowing non-member functions to have access to private and protected members of a class. It can also be used when implementing the Pimpl idiom, where a class exposes only its public interface and hides its implementation details in a separate class that is declared as a friend of the public class.
 
+- It is worth noting that using the friend keyword can potentially compromise the encapsulation and data hiding features of object-oriented programming, so it should be used judiciously and only when necessary.
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
-
-
-
+    
+ 
 
 
 
