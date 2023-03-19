@@ -1422,7 +1422,9 @@ delete[] arr;
 # how to use containers
 
 - To use containers, you first need to include the appropriate header file. For example, to use std::vector, you would include the <vector header:
-
+                                                                                                                                           
+              
+                                                                                                                        
 ```CPP
 #include <vector>
 
@@ -1441,20 +1443,28 @@ int main() {
     return 0;
 }
 
+    
 ```
-> This example creates a std::vector<int object named vec, initializes it with five integers, adds a sixth integer to the end of the vector using the push_back() function, and then iterates over the elements of the vector using a for loop and prints them to the console.
+> This example creates a std::vectorint object named vec, initializes it with five integers, adds a sixth integer to the end of the vector using the push_back() function, and then iterates over the elements of the vector using a for loop and prints them to the console.
 
 - You can use other containers in a similar way, but with different functions and iterators specific to each container
 
 # what is iterator
 
+    
+  
+                                         
 - In C++, an iterator is an object that allows iteration (looping) through a container of elements, like an array or a standard container like vector, set, map, etc. Iterators are used to traverse the elements of a container and access them. They act as a generalization of pointers and allow generic algorithms to be written that can work with different types of containers.
 
 - Iterators can be classified into different types based on the level of access they provide to the underlying container. Some of the common types of iterators are:
 
 1. **Input iterators:** These iterators provide read-only access to a container and allow iteration over its elements in a forward-only direction.
 
-
+2. Output iterators: These iterators provide write-only access to a container and allow iteration over its elements in a forward-only direction.
+                                         
+                                         
+                                         
+                                       
 
 
 
