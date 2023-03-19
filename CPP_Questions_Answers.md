@@ -1421,10 +1421,10 @@ delete[] arr;
 
 # how to use containers
 
-- To use containers, you first need to include the appropriate header file. For example, to use std::vector, you would include the <vector header:
-                                                                                                                                           
-              
-                                                                                                                        
+To use containers, you first need to include the appropriate header file. For example, to use std:vector, you would include the vector header: 
+
+
+
 ```CPP
 #include <vector>
 
@@ -1459,12 +1459,51 @@ int main() {
 - Iterators can be classified into different types based on the level of access they provide to the underlying container. Some of the common types of iterators are:
 
 1. **Input iterators:** These iterators provide read-only access to a container and allow iteration over its elements in a forward-only direction.
+2. **Output iterators:** These iterators provide write-only access to a container and allow iteration over its elements in a forward-only direction.
+3. **Forward iterators:** These iterators provide read and write access to a container and allow iteration over its elements in a forward-only direction.
+4. **Bidirectional iterators:** These iterators provide read and write access to a container and allow iteration over its elements in both forward and backward directions.
+5. **Random access iterators:** These iterators provide read and write access to a container and allow random access to its elements, i.e., elements can be accessed in any order using an index.
 
-2. Output iterators: These iterators provide write-only access to a container and allow iteration over its elements in a forward-only direction.
-                                         
-                                         
-                                         
-                                       
+
+- STL containers and algorithms are designed to work with iterators, making them a powerful and flexible tool for working with data.
+
+# What is happening during the allocation and reallocation?
+
+- In dynamic arrays, allocation refers to the process of reserving a block of memory for the array elements, and reallocation refers to the process of increasing or decreasing the size of the allocated block of memory.
+
+
+- When the array is first created, memory is allocated for a fixed number of elements specified by the user. If more elements need to be added, and there is no room in the existing block of memory, a new block of memory is allocated, typically larger than the previous one, and the existing elements are copied over to the new block. This process is known as reallocation. If the number of elements decreases, and the block of memory becomes partially empty, the block may be resized to a smaller size. In both cases, the original block of memory is deallocated.
+
+- The reallocation process can be an expensive operation, as it requires copying elements to a new location. To minimize the number of reallocations, the container may use heuristics to decide how much additional memory to allocate when a reallocation is needed. For example, the vector container typically doubles the size of the allocated memory each time a reallocation is required, in order to reduce the number of reallocations. This can result in significant memory wastage for small vectors, but can improve performance for large vectors.
+
+# So after reallocation, what happen to the old pointers?
+
+- After reallocation, the old pointers may no longer be valid and should not be used. The memory previously occupied by the old data may be freed or used for other purposes. Therefore, it's important to update all the relevant pointers to the new memory location after reallocation. In C++, this is typically handled by returning a new pointer to the newly allocated memory and updating the original pointer to point to this new location.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
