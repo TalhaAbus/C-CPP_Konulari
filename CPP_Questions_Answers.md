@@ -24,21 +24,45 @@ The process of function overload resolution involves several steps:
 
 # What is user defined conversion
 
+- User-defined conversions in C++ refer to the process of defining a conversion function within a class to enable the object of that class to be converted to another type. This process is also known as type conversion or type casting.
 
+- In C++, you can define a user-defined conversion function using the syntax:
 
+```CPP
+operator target_type() const;
+```
+> where target_type is the type you want to convert your class to. This function can be defined as a member function of the class or a non-member function that takes an object of the class as its argument.
 
+- For example, consider the following class:
 
+```CPP
+class MyInt {
+public:
+    int value;
+    MyInt(int v) : value(v) {}
+};
+```
+- To enable objects of this class to be converted to integers, we can define a user-defined conversion function like this:
 
+```CPP
+class MyInt {
+public:
+    int value;
+    MyInt(int v) : value(v) {}
+    operator int() const { return value; }
+};
 
+```
+- This allows us to use objects of the MyInt class as if they were integers, such as:
 
+```CPP
+MyInt x(42);
+int y = x;
 
+```
+> In this example, the user-defined conversion function operator int() const is called to convert the object x of the MyInt class to an integer y.
 
-
-
-
-
-
-
+- User-defined conversions can be powerful tools in C++, but they should be used with caution as they can sometimes lead to unexpected results and make code harder to read and maintain. It is generally recommended to use them sparingly and only when they make the code more readable and understandable.
 
 
 
