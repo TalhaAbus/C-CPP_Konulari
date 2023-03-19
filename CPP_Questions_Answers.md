@@ -1070,13 +1070,389 @@ int main() {
 
 # How "cout" object output data to the console
 
-- In C++, the cout object is an instance of the ostream class, which is defined in the <iostream> header. The ostream class provides methods for outputting formatted data to various output devices, including the console. When you call the << operator on the cout object, you are actually calling the operator<< method of the ostream class, passing in the data that you want to output as a parameter. The operator<< method then writes the data to the console using various formatting options, such as padding and precision.
+- In C++, the cout object is an instance of the ostream class, which is defined in the <iostream header. The ostream class provides methods for outputting formatted data to various output devices, including the console. When you call the << operator on the cout object, you are actually calling the operator<< method of the ostream class, passing in the data that you want to output as a parameter. The operator<< method then writes the data to the console using various formatting options, such as padding and precision.
 
 # what is "using" decleration
 
-    
-    
+- In C++, using declaration is used to introduce a symbol or a namespace into the current scope, to avoid typing the full qualified name every time it is used.
 
+- For example, if you have a long namespace name like std::chrono::high_resolution_clock, you can use using declaration to introduce the namespace and avoid typing the full name every time you want to use it:
+
+```CPP
+#include <chrono>
+using std::chrono::high_resolution_clock;
+
+int main() {
+    auto t1 = high_resolution_clock::now();
+    // ...
+}
+
+```
+
+- In this example, using std::chrono::high_resolution_clock introduced 
+- high_resolution_clock into the current scope, so we can use 
+- high_resolution_clock::now() instead of 
+- std::chrono::high_resolution_clock::now().
+
+# what is "using namespace" decleration and what are differences with "using" decleration
+
+
+- In C++, a using directive is used to bring all the declarations of a namespace into the current scope. The syntax for using directive is using namespace name_of_namespace;.
+
+
+**For example:**
+```CPP
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    cout << "Hello, World!" << endl;
+    return 0;
+}
+
+```
+
+- Here, using namespace std; brings all the declarations of the std namespace into the current scope. So, we can use cout directly instead of qualifying it with std::.
+
+- A using declaration, on the other hand, is used to bring a specific declaration from a namespace into the current scope. The syntax for using declaration is using name_of_namespace::name_of_declaration;.
+
+**For example:**
+
+```CPP
+#include <iostream>
+
+using std::cout;
+
+int main()
+{
+    cout << "Hello, World!" << std::endl;
+    return 0;
+}
+
+```
+> Here, using std::cout; brings the cout declaration from the std namespace into the current scope. So, we can use cout directly instead of qualifying it with std::. However, other declarations from the std namespace are not brought into the current scope.
+
+# What is ADL (Argument dependant lookup)
+
+- Argument-dependent lookup (ADL), also known as argument-dependent name lookup or Koenig lookup, is a feature of C++ that allows functions and operators to be overloaded based on the types of arguments passed to them. When a function or operator is called with arguments of a certain type, the compiler will look for its definition not only in the current scope, but also in the namespaces associated with those argument types.
+
+- For example, suppose we have a function print and a type my_type defined in the namespace my_ns:
+
+```CPP
+namespace my_ns {
+    struct my_type {};
+    void print(my_type const& x) {
+        // ...
+    }
+}
+
+```
+
+
+- If we call print with an argument of type my_type, we can omit the namespace qualification for the function:
+
+```CPP
+my_ns::my_type x;
+print(x); // uses my_ns::print
+
+```
+- This is because the compiler will look for print in the my_ns namespace due to the type of x being my_type. ADL can be useful for writing more generic code that can work with types from different namespaces. However, it can also sometimes cause unexpected overloading or name resolution, so it is important to be aware of its behavior when writing C++ code.
+
+# what is unnamed namespace
+
+- In C++, an unnamed namespace is a namespace without a name that is used to declare variables, functions, and classes that are only accessible within a single translation unit. When you define an unnamed namespace, the contents of the namespace are only visible within the file in which they are defined, and they are not accessible from other files.
+
+
+- For example, consider the following code snippet:
+
+```CPP
+// foo.cpp
+namespace {
+    int x = 42;
+}
+
+void foo() {
+    x = 24; // x is visible only within foo.cpp
+}
+
+```
+> In this code, an unnamed namespace is used to define an integer variable x. Since the namespace is unnamed, its contents are only visible within foo.cpp, and x cannot be accessed from other translation units. This provides a way to encapsulate implementation details within a file and avoid naming collisions with other files.
+
+# So it's kind of like getting the variables in the file scope right?
+- Yes, that's correct. The variables declared in an unnamed namespace have file scope, but they are only accessible within the translation unit in which they are defined. This allows you to declare variables that are private to a particular source file and not visible to the rest of the program.
+
+# what is inline namespace
+
+- An inline namespace is a C++11 feature that allows you to define a namespace that is a member of another namespace or of a class, and whose members are automatically brought into the enclosing namespace or class scope, as if the inline namespace was part of the enclosing scope.
+
+- In other words, an inline namespace allows you to define a group of related symbols, but without introducing an additional level of nesting. This can be useful when you want to version your interfaces or organize your code in a more modular way.
+
+- Here's an example of how to use an inline namespace:
+
+```CPP
+namespace my_library {
+    inline namespace v1 {
+        void my_function() {
+            std::cout << "Hello from version 1\n";
+        }
+    }
+
+    inline namespace v2 {
+        void my_function() {
+            std::cout << "Hello from version 2\n";
+        }
+    }
+}
+
+int main() {
+    my_library::my_function();  // Calls the function from v2
+    return 0;
+}
+
+```
+
+- In this example, we define an inline namespace v1 and v2 inside the my_library namespace. The my_function() is defined in both namespaces. When we call my_function() inside main(), it will call the version of my_function() that is defined in the latest inline namespace (v2 in this case), since it overrides any definitions in earlier inline namespaces.
+
+# why inline namespaces exist?
+
+- Inline namespaces in C++ exist to allow for more flexible versioning and extension of code.
+- Suppose you have a library or module that provides some functionality, and you want to extend it or modify it while still maintaining backwards compatibility for existing code that uses the original version of the library. You could achieve this by creating a new namespace for the modified version of the library, but then you would have to update all the code that uses the original version of the library to use the new namespace. This can be a lot of work and can introduce bugs if the update is not done carefully.
+- Instead, you can use an inline namespace to create a new version of the library that is nested within the original namespace. Code that uses the original version of the library can continue to use the original namespace, while code that uses the new version can use the nested inline namespace. This way, both versions of the library can coexist in the same program without conflict.
+- Furthermore, because the new version of the library is an inline namespace, any code that depends on the original version of the library will automatically pick up the new version if it is available, without needing to be updated. This makes it easy to extend and modify existing code without introducing breaking changes.
+
+
+# what is namespace alias
+- Namespace alias is a feature in C++ that allows creating an alias or alternative name for an existing namespace. It provides a way to refer to a namespace with a different name, making it easier to use in code.
+
+- Namespace alias is created using the namespace keyword followed by the new name and the = operator, followed by the original namespace name. For example, the following code creates an alias for the std namespace:
+
+```CPP
+namespace new_name = std;
+
+```
+- After this declaration, you can use new_name instead of std in your code. This is useful when you want to shorten long namespace names, create a more descriptive name, or when you want to avoid namespace conflicts.
+
+- Namespace alias can be declared at global scope, function scope, or block scope, and can be used with any namespace.
+
+# what is nested type
+
+- In C++, a nested type is a type that is defined inside another type. For example, a class can have a nested class, and a struct can have a nested enum. The nested type is then considered a member of the enclosing type and can be accessed using the scope resolution operator ::.
+
+- Here's an example of a nested class:
+
+
+```CPP
+class Outer {
+public:
+    class Inner {
+    public:
+        void foo();
+    };
+};
+
+void Outer::Inner::foo() {
+    // ...
+}
+
+int main() {
+    Outer::Inner obj;
+    obj.foo();
+}
+
+```
+> In this example, Inner is a nested class of Outer. The foo() function of the nested class is defined outside the class definition using the scope resolution operator ::. To create an object of the nested class, we use the scope resolution operator to specify the enclosing class, like Outer::Inner obj;.
+
+# can a nested type access to the private section
+
+- Yes, a nested type can access the private section of its enclosing class. Since a nested type is a member of its enclosing class, it has access to all members (including private members) of its enclosing class.
+
+- However, it is important to note that the nested type itself may have different access control restrictions depending on how it is declared. For example, a nested class declared as "private" can only be accessed by its enclosing class and its friends.
+
+# what is containment
+
+- Containment in C++ is a way of creating a class by including one or more objects of other classes as member variables of the new class. It is also known as composition.
+
+- In containment, a class contains one or more objects of other classes as its member variables. These member variables can be used to provide additional functionality to the class, or to represent relationships between different objects.
+
+- Containment is an important concept in object-oriented programming because it allows for the creation of complex classes and relationships between objects. It is often used to model real-world relationships between objects, such as a car containing an engine and a transmission, or a company containing multiple departments.
+
+# Association - Aggregation - Composition ?
+
+- In object-oriented programming, there are three types of relationships between classes: Association, Aggregation, and Composition.
+
+- **Association** represents a relationship between two classes, where each class has its own life cycle and there is no ownership between them. For example, a teacher and a student can have an association where a teacher teaches a student. But, the student is not owned by the teacher, and the student can exist without the teacher.
+
+- **Aggregation** is a type of association where one class owns another class, and the owned class cannot exist without the owner. However, the owned class has its own life cycle, and it can belong to multiple owners. For example, a car can have an aggregation relationship with its engine. The car owns the engine, and the engine cannot exist without the car. But, the engine can also be used in other cars.
+
+- **Composition** is also a type of association where one class owns another class, but the owned class cannot exist without the owner. The difference between aggregation and composition is that in composition, the owned class is part of the owner class, and it cannot be shared with other owners. For example, a car can have a composition relationship with its tires. The tires are part of the car, and they cannot be used by other cars.
+
+# what is STL
+
+- STL stands for Standard Template Library, which is a library of reusable code components in C++ programming language. The library provides a set of container classes, algorithms, and iterators that are implemented using templates. The templates allow for generic programming, which means that the same code can be used for different types of data.
+
+- The container classes in STL include vector, list, deque, map, set, and others. These containers provide a way to store and organize data in memory. Algorithms in the library include sorting, searching, and other operations that can be performed on containers. Iterators provide a way to access and manipulate data in containers in a flexible way.
+
+- STL is part of the C++ Standard Library and is widely used in C++ programming for its efficiency and flexibility. It has become an essential tool for C++ developers and is often used in software development projects that require efficient data structures and algorithms.
+
+# Is that a generic library ? What kind of things exist in STL library?
+
+- Yes, the STL (Standard Template Library) is a generic library that provides a collection of powerful and efficient algorithms and data structures. The STL is a part of the C++ standard library and it provides a framework for implementing container classes, iterators, algorithms, and function objects.
+
+
+- The STL library includes several container classes such as vectors, lists, maps, sets, and queues. It also includes several algorithms such as sorting, searching, and transforming that can be used with these containers. Additionally, the STL provides several iterator types that allow for traversal of container elements and algorithms.
+
+- Some other features of the STL include function objects, which are objects that behave like functions, and smart pointers such as unique_ptr and shared_ptr, which are used for automatic memory management. Overall, the STL provides a powerful set of tools for developers to use when building C++ applications.
+
+# Can you elaborate on "function objects" ?
+
+- Function objects, also known as functor, are objects that can be used as functions. In C++, a function object is a class type that overloads the function call operator operator() and can be invoked like a function.
+
+- Unlike regular functions, function objects can have state, allowing them to keep track of data across multiple calls. They can also be customized to perform specific operations, making them powerful tools for data processing and manipulation.
+
+- Function objects are widely used in the STL, where they are often used as predicates for algorithms like sort() or find_if(). They are also used as custom comparators for containers like set and map.
+
+
+- Here is an example of a function object that calculates the sum of two integers:
+
+```CPP
+class Adder {
+public:
+    int operator()(int x, int y) {
+        return x + y;
+    }
+};
+
+int main() {
+    Adder add;
+    int sum = add(2, 3); // sum is 5
+}
+
+```
+> In this example, Adder is a function object that overloads the operator() to perform the addition of two integers. The object add can be called like a function to calculate the sum of two numbers.
+
+# what is dynamic array
+
+- A dynamic array, also called a resizable array or a dynamic array container, is an array-like data structure that can change its size dynamically during runtime. In contrast to a static array, where the size is fixed and determined at compile time, the size of a dynamic array can be increased or decreased at runtime as needed. This flexibility makes dynamic arrays a popular choice for many programming tasks, particularly when dealing with large amounts of data.
+
+- In C++, the standard library provides a dynamic array container called std::vector. The std::vector class encapsulates a dynamic array and provides a variety of methods to manipulate the array, such as adding or removing elements, accessing elements by index, and changing the size of the array. Dynamic arrays are often implemented using a combination of memory allocation and copying operations behind the scenes to ensure efficient resizing and memory management.
+
+# How does dynamic arrays work?
+
+- In C++, dynamic arrays are created using pointers and allocated in the heap memory. When a dynamic array is created, the program requests a block of memory from the operating system using the new operator. The amount of memory requested is based on the number of elements that the dynamic array will store, and the size of each element.
+- For example, if we want to create an array of 10 integers, we would use the following code:
+
+```CPP
+int* arr = new int[10];
+
+```
+- This code creates a dynamic array of 10 integers and returns a pointer to the first element of the array, which is stored in the arr variable.
+
+- To access an element in the dynamic array, we use the array indexing operator []. For example, to set the value of the first element in the array to 42, we would use the following code:
+
+```CPP
+arr[0] = 42;
+
+```
+- When we are finished using the dynamic array, we need to free the memory that was allocated using the delete[] operator. For example:
+
+```CPP
+delete[] arr;
+
+```
+- This releases the memory that was allocated for the dynamic array back to the operating system.
+
+- It's important to note that when using dynamic arrays, we are responsible for managing the memory ourselves. This means that we need to make sure that we delete the array when we are finished using it to avoid memory leaks. Additionally, we should be careful not to access memory that has already been freed, as this can result in undefined behavior.
+
+# How much storage does it occupy in memory ? What kind of pointers does it contain?
+
+- The amount of memory occupied by a dynamic array depends on the number of elements it contains and the size of each element. The total size of the array can be calculated as number_of_elements * size_of_each_element
+
+- Dynamic arrays are usually allocated using the new operator, which returns a pointer to the first element of the array. The pointer is of the same type as the elements of the array, so if the array contains int elements, the pointer will be of type int*.
+
+- The pointer returned by new points to a block of contiguous memory that can be accessed using array syntax, e.g. array[0], array[1], etc. Since the pointer points to the first element of the array, it can be used to access any element by adding an offset to the pointer.
+
+- It's important to note that dynamic arrays don't have any built-in bounds checking, so it's the responsibility of the programmer to ensure that array indices are within the bounds of the array.
+
+
+# What are the 3 pointers held by dynamic arrays?
+
+- Dynamic arrays in C++ are allocated from the heap using the new keyword and they return a pointer to the first element of the array. There is only one pointer that points to the start of the array, but it is possible to access other elements in the array by incrementing or decrementing the pointer.
+
+- In addition to the pointer to the start of the array, there are two other pointers held by dynamic arrays:
+
+1. A pointer to the end of the allocated memory. This pointer is often called the "past-the-end" pointer or "one-past-the-end" pointer and points to the memory location immediately following the last element of the array.
+2. A pointer to the size of the allocated memory. This pointer is often called the "size" pointer and contains the number of elements that have been allocated for the array.
+
+# is string a template ? what is basic_string ? 
+
+- std::string is a typedef for a specialization of the std::basic_string class template in the C++ Standard Library.
+
+- std::basic_string is a class template that provides a mechanism to store and manipulate sequences of characters in C++. It is parameterized by a character type (such as char or wchar_t), an allocator type, and other optional template parameters.
+
+- In other words, std::string is a specific instantiation of std::basic_string with the character type set to char. It provides a convenient way to work with strings of characters in C++, including support for many common string operations such as concatenation, substring extraction, and searching.
+
+# what is SSO (Small string optimization
+
+- SSO (Small String Optimization) is a technique used in some C++ standard library implementations to optimize the storage of small strings. The basic idea is to avoid allocating dynamic memory on the heap for small strings, and instead store the string directly in the memory of the string object itself.
+
+- In the case of std::string, SSO means that if the string is small enough (typically 15 characters or less), the characters will be stored directly in the string object itself, rather than being allocated on the heap. This can result in significant performance improvements for small strings, since heap allocation and deallocation can be relatively expensive.
+
+- If the string grows beyond the SSO limit, then dynamic memory will be allocated on the heap to store the additional characters. This means that the std::string object will contain both the small string buffer and the heap-allocated buffer.
+
+- Note that SSO is an implementation detail, and is not required by the C++ standard. Some implementations may not use SSO at all, while others may use different thresholds for determining when to use SSO.
+
+# What is a container ? Is string a container ?
+
+- In programming, a container is a data structure that is used to store and organize other objects or elements of data. Containers can be used for a variety of purposes, such as managing collections of data or implementing algorithms and data structures.
+
+- In C++, the Standard Template Library (STL) provides a variety of container classes that can be used to store data. These container classes include vector, list, map, set, and others.
+
+- String is also a container in C++. It is a container class that represents a sequence of characters. It is based on the basic_string template class, which provides a general implementation of a string class that can be used with a wide range of character types.
+
+- In computer science, a container is an object that can store and organize other objects or data. A container can be thought of as a way to hold and manage a collection of objects or data, providing various operations for adding, removing, and manipulating the elements within it.
+
+- In the context of C++, the Standard Template Library (STL) provides several container classes that are implemented as template classes. These container classes include vector, list, map, set, and others. These containers are designed to hold elements of various types, such as integers, strings, or user-defined objects, and provide a range of operations for managing and manipulating the contained elements.
+
+- Each container has its own characteristics and trade-offs in terms of storage, access speed, insertion and deletion speed, and other factors. Choosing the appropriate container for a particular task depends on the requirements of the task and the performance characteristics of the container.
+
+- As for string, yes, it can be considered a container in the sense that it is an object that can hold and manage a sequence of characters. More specifically, string is a container class that is implemented as a specialization of the basic_string template class in the STL.
+
+# how to use containers
+
+- To use containers, you first need to include the appropriate header file. For example, to use std::vector, you would include the <vector header:
+
+```CPP
+#include <vector>
+
+int main() {
+    // create a vector of integers
+    std::vector<int> vec = {1, 2, 3, 4, 5};
+
+    // add an element to the vector
+    vec.push_back(6);
+
+    // iterate over the elements of the vector and print them
+    for (auto it = vec.begin(); it != vec.end(); ++it) {
+        std::cout << *it << " ";
+    }
+
+    return 0;
+}
+
+```
+> This example creates a std::vector<int object named vec, initializes it with five integers, adds a sixth integer to the end of the vector using the push_back() function, and then iterates over the elements of the vector using a for loop and prints them to the console.
+
+- You can use other containers in a similar way, but with different functions and iterators specific to each container
+
+# what is iterator
+
+- In C++, an iterator is an object that allows iteration (looping) through a container of elements, like an array or a standard container like vector, set, map, etc. Iterators are used to traverse the elements of a container and access them. They act as a generalization of pointers and allow generic algorithms to be written that can work with different types of containers.
+
+- Iterators can be classified into different types based on the level of access they provide to the underlying container. Some of the common types of iterators are:
+
+1. **Input iterators:** These iterators provide read-only access to a container and allow iteration over its elements in a forward-only direction.
 
 
 
