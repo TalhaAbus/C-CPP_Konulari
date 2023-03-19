@@ -296,34 +296,501 @@ int main() {
 
 - In practice, the choice between class and struct is largely a matter of style and convention. In some coding communities, it's common to use struct for simple data structures that don't have much behavior, and class for more complex objects with behavior and encapsulation. However, this is just a convention and you can use either class or struct depending on your coding style and preference.
 
+# In game developments, which one i should use?
+
+- In game development, there is no clear preference for using either class or struct. Both can be used effectively depending on the situation.
+
+- In general, class tends to be used for more complex objects with behavior, encapsulation, and inheritance, such as player characters, enemies, or game items. struct tends to be used for simple data structures that don't have much behavior or encapsulation, such as vectors, points, or colors.
+
+- However, these are just conventions and there is no hard and fast rule. Ultimately, the choice between class and struct should be based on what best fits the needs of your specific game development project, and what coding style you are most comfortable with.
+
+# which situations are suitable for class and for structs?
+
+- In general, class and struct can be used interchangeably in most cases in C++. However, there are some general guidelines on when to use each:
+
+**Use class when:**
+
+1. You need to define an object with complex behavior, encapsulation, and inheritance.
+2. You need to use access modifiers to protect the data members and member functions of the class.
+3. You want to define constructors, destructors, and overloaded operators.
+
+**Use struct when:**
+
+1. You need to define a simple data structure that groups together related variables.
+2. You don't need encapsulation, and the data members can be public.
+3. You don't need constructors, destructors, or overloaded operators.
+
+**Here are some examples to illustrate these guidelines:**
+
+**Use class:**
+
+```CPP
+class Player {
+private:
+    std::string name;
+    int health;
+public:
+    Player(std::string name, int health);
+    void attack(Player& other);
+    void takeDamage(int damage);
+};
+
+class Enemy : public Player {
+public:
+    Enemy(std::string name, int health, int attackPower);
+    void attack(Player& other);
+private:
+    int attackPower;
+};
+
+```
+
+**Use struct:**
+```CPP
+struct Vector3 {
+    float x, y, z;
+};
+
+struct Color {
+    unsigned char r, g, b, a;
+};
+
+struct Point {
+    int x, y;
+};
+
+```
+- Of course, these are just guidelines and there can be exceptions. The choice between class and struct should ultimately depend on the specific needs and requirements of your program.
+
+# Why they declare function in class and define it out of the class?
+
+- In C++, it is common to declare a function inside a class using a function prototype, and then define the function outside the class. This is known as "separate compilation" or "separate linkage" and is often done for code organization and maintainability purposes.
+
+**Here are some reasons why you might want to declare a function in a class and define it outside of the class:**
+
+1. Code organization: By grouping related functions together in a class, it can be easier to read and understand the code. Declaring the function inside the class provides a clear indication that the function is related to the class, while defining it outside the class provides a separation of concerns.
+
+2. Encapsulation: By declaring functions as public, protected, or private inside a class, you can control the access to the functions and data members. This helps to enforce encapsulation and maintain the integrity of the class.
+
+3. Modularity: By defining functions outside of the class, you can use them in other classes or functions, promoting code reuse and modularity.
+
+4. Compilation time: By separating the declaration and definition of functions, the compiler can process each separately, reducing compile time and making the code easier to maintain.
+
+**Here is an example of declaring a function in a class and defining it outside of the class:**
+
+```CPP
+class MyClass {
+public:
+    void myFunction(); // function prototype
+};
+
+void MyClass::myFunction() { // function definition outside of class
+    // function body
+}
+
+```
+- By declaring the myFunction() inside the MyClass, you can use it as a member function of MyClass. By defining it outside the class, you can separate the implementation of the function from the declaration, making it easier to maintain and reuse.
+
+# what is "this" keyword
+
+- In C++, the this keyword is a pointer that refers to the current instance of a class. It is used inside a member function of a class to refer to the object on which the member function is being called.
+
+- When a member function is called on an object, the object's address is automatically passed to the this pointer. The this pointer can be used to access the object's data members and member functions.
+
+- Here is an example of using the this pointer inside a member function:
+
+```CPP
+class MyClass {
+public:
+    void setX(int x) {
+        this->x = x; // using this pointer to access object's data member
+    }
+private:
+    int x;
+};
+
+int main() {
+    MyClass obj;
+    obj.setX(5); // calling setX function on obj
+    return 0;
+}
+
+```
+
+> In this example, the setX() member function is called on an object obj. Inside the setX() function, the this pointer is used to refer to the obj object and access its x data member.
+
+- When a member function is called on an object, the this pointer points to the memory location of that object. Within the member function, the this pointer can be used to access the object's data members and other member functions.
+
+# what is const correctness
+
+- Const correctness in C++ refers to the practice of using const to enforce read-only access to data, and to ensure that member functions do not modify the object's state if they are not intended to do so.
+
+- The const keyword is used to declare that a variable or member function does not modify the object's state. When applied to a variable or parameter, const indicates that the value of the variable cannot be modified after it is initialized. When applied to a member function, const indicates that the function does not modify the object's state.
+
+**Here is an example that demonstrates const correctness:**
+
+```CPP
+class MyClass {
+public:
+    int getValue() const {
+        return value;
+    }
+    void setValue(int value) {
+        this->value = value;
+    }
+private:
+    int value;
+};
+
+int main() {
+    const MyClass obj; // obj is a const object of MyClass
+    int value = obj.getValue(); // read-only access is allowed
+    obj.setValue(10); // compilation error: setValue() is not a const function
+    return 0;
+}
+
+```
+
+> In the above example, getValue() is declared as a const member function, which means it cannot modify the object's state. Therefore, it can be called on a const object like obj. On the other hand, setValue() is not declared as const, which means it can modify the object's state. Therefore, it cannot be called on a const object.
+
+# what is mutable keyword
+
+- In C++, the mutable keyword is used to specify that a member variable of a class can be modified even if the object is const. This allows a const object to modify its state in a controlled manner.
+
+**Here is an example to demonstrate the use of mutable:**
+
+```CPP
+class MyClass {
+public:
+    int getValue() const {
+        counter++; // modify mutable member
+        return value;
+    }
+private:
+    int value;
+    mutable int counter = 0; // mutable member
+};
+
+int main() {
+    const MyClass obj; // obj is a const object of MyClass
+    int value = obj.getValue(); // counter is incremented, but obj is still const
+    return 0;
+}
+
+```
+> In the above example, counter is declared as mutable, which means it can be modified even if the object is const. The getValue() function increments the counter member, but because it is marked as mutable, this modification is allowed even if the object is const. Note that modifying a non-mutable member of a const object is not allowed and will result in a compilation error.
+
+# what is static initialization fiasco
+
+- The "static initialization fiasco" is a term used to describe a class of bugs that can occur in C++ programs when the order of initialization of global variables is not well-defined or not understood.
+
+- In C++, global variables that are defined in a single translation unit are initialized in a well-defined order. However, when global variables are defined in multiple translation units, the order of initialization is not well-defined, and may depend on factors such as the order of linking of the translation units.
+
+- When the initialization of one global variable depends on the value of another global variable that has not yet been initialized, this can result in undefined behavior. For example, consider the following code:
+
+```CPP
+// file1.cpp
+#include <iostream>
+extern int x;
+int y = x + 1;
+
+// file2.cpp
+#include <iostream>
+int x = 42;
+
+// main.cpp
+#include <iostream>
+extern int y;
+int main() {
+    std::cout << y << std::endl;
+}
+
+```
+> In this example, the y variable in file1.cpp depends on the value of the x variable defined in file2.cpp. However, the order of initialization of global variables is not well-defined, so it is possible for y to be initialized before x, resulting in undefined behavior. In the example code I provided, it is an undefined behavior.
+
+> The reason is that the order of static initialization of non-local static objects defined in different translation units is unspecified. It means that it is not guaranteed that the variable x defined in a.cpp will be initialized before the variable y defined in b.cpp when the program starts. Therefore, if the initialization of y depends on the value of x, the behavior of the program is undefined.
+
+- To avoid the static initialization fiasco, it is recommended to avoid global variables as much as possible, and to use local static variables or singleton patterns instead, as these provide more control over the order of initialization.
+
+- To avoid the static initialization fiasco, we can use techniques such as lazy initialization or initialization-once to ensure that the variables are initialized in a well-defined order.
+
+# What are new and delete operators
+
+- new and delete are the dynamic memory management operators in C++. They are used to allocate and deallocate memory on the heap.
+
+- new operator is used to allocate memory dynamically for objects at runtime. It returns a pointer to the object that was allocated. new operator can also call the constructor of the object to initialize it.
 
 
+**For example:**
+
+```CPP
+int* ptr = new int; // allocate memory for an integer
+*ptr = 10; // store a value in the allocated memory
+
+```
+
+- delete operator is used to deallocate the memory that was allocated with new operator. It frees the memory back to the system for reuse. It is important to call delete on every pointer that was returned by new to avoid memory leaks.
+
+**For example:**
+
+```CPP
+delete ptr; // deallocate the memory that was allocated with new
+
+```
+- It is worth noting that there is also an array form of new and delete operators for allocating and deallocating arrays of objects. For example:
 
 
+```CPP
+int* arr = new int[10]; // allocate memory for an array of 10 integers
+delete[] arr; // deallocate the memory that was allocated with new[]
+
+```
+
+# new operator and operator new function are the same?
+
+- No, new operator and operator new function are not the same
+
+- new operator is used to dynamically allocate memory for an object and call its constructor to initialize it. It combines the functionality of operator new function and object initialization.
+
+- operator new function is used to allocate memory, but it does not call the object constructor. It is called by the new operator to allocate memory for an object.
+
+- Similarly, delete operator and operator delete function are used for deallocating memory for an object, where delete operator calls the object destructor before deallocating memory, whereas operator delete only deallocates memory.
+
+# What is RAII idiom
+
+- RAII stands for Resource Acquisition Is Initialization. It is an idiom in C++ that is used to manage resources such as memory, file handles, network connections, and other system resources.
+
+- The basic idea of RAII is to associate the lifetime of a resource with the lifetime of an object, and to use the constructor and destructor of that object to manage the resource. The resource is acquired in the constructor, and released in the destructor, ensuring that it is released properly even in the presence of exceptions.
+
+- For example, consider the case of dynamically allocated memory. Rather than using new and delete statements to allocate and deallocate memory directly, we can create a class that encapsulates the memory, and use its constructor and destructor to allocate and deallocate the memory. This ensures that the memory is properly released when the object goes out of scope, even in the presence of exceptions.
+
+- RAII provides a way to manage resources in a safe and efficient manner, and is widely used in C++ programming.
+
+# what is user declared - defined 
+
+- In C++, a user-declared function is a function that has been declared in the program by the programmer, whereas a user-defined function is a function that has been both declared and defined by the programmer in the program.
+
+- When a function is declared, the compiler is made aware of the function’s name, return type, and the number and types of its parameters. The definition of the function, on the other hand, provides the actual implementation of the function’s behavior.
+
+**For example, consider the following code:*
+
+```CPP
+int add(int x, int y); // function declaration
+
+int main() {
+    int a = 5, b = 10;
+    int sum = add(a, b); // function call
+    return 0;
+}
+
+int add(int x, int y) { // function definition
+    return x + y;
+}
+
+```
+> In this code, add is a user-declared function because it is declared before it is used in the main function. However, it is also a user-defined function because it has a definition that provides the implementation of its behavior.
 
 
+# what is user declared - defaulted
+
+- In C++, user-declared defaulted functions are functions that are explicitly declared with the = default specifier. They are used to provide a default implementation of a function that the compiler can generate, but that the programmer wants to explicitly specify as the default.
+
+**For example, consider a class with a default constructor:**
+
+```CPP
+class MyClass {
+public:
+    MyClass() = default;
+};
+
+```
+> Here, the MyClass constructor is explicitly defined as defaulted using the = default specifier. This tells the compiler to generate a default implementation of the constructor, even though it has been explicitly defined.
+
+- Similarly, user-declared deleted functions are functions that are explicitly declared as deleted using the = delete specifier. They are used to prevent the compiler from generating certain functions that would otherwise be generated automatically.
+
+**For example, consider a class where copy constructor and copy assignment operator are deleted:**
+
+```CPP
+class MyClass {
+public:
+    MyClass() = default;
+    MyClass(const MyClass&) = delete;
+    MyClass& operator=(const MyClass&) = delete;
+};
+
+```
+
+> Here, the copy constructor and copy assignment operator are explicitly deleted using the = delete specifier. This prevents the compiler from generating these functions, which would otherwise allow copying of the MyClass object.
+
+# what is constructor initializer list
+
+- Constructor initializer list is a special syntax in C++ used to initialize the member variables of a class inside the constructor of the class. It is used to set the initial value of the member variables of the class when an object is created, before the body of the constructor is executed.
+
+- The constructor initializer list appears after the constructor prototype and before the opening curly brace of the constructor. It consists of a comma-separated list of member variable names, followed by their corresponding values enclosed in parentheses. For example:
+
+```CPP
+class MyClass {
+public:
+  MyClass(int a, int b) : x(a), y(b) {}
+private:
+  int x;
+  int y;
+};
+
+```
+
+> In this example, the constructor of MyClass takes two arguments, a and b, and initializes the member variables x and y using the constructor initializer list. This syntax can also be used to initialize non-static data members of class templates.
+
+# what is non-static
+
+- In C++, the keyword "non-static" is used to specify that a member variable or function is not shared among all instances of a class, but rather belongs to each individual instance of the class. Non-static members are also known as instance members or object members.
+
+- Non-static member variables are declared inside a class but outside any member functions, and each instance of the class has its own copy of these variables. Non-static member functions are also declared inside a class and operate on the member variables of the class, but they are invoked on a specific instance of the class and can access the non-static member variables of that instance.
+
+- In contrast, static members are shared among all instances of a class and are declared with the static keyword. They can be accessed without creating an instance of the class, and changes made to them affect all instances of the class.
+
+# what is operator overloading
+
+- Operator overloading in C++ is a technique that allows operators to be redefined or extended to work with user-defined data types, such as classes or structures. This means that operators such as +, -, *, /, =, ==, etc. can be overloaded to perform custom operations on objects of a class or structure.
+
+- By overloading operators, C++ enables classes to behave like built-in data types, which makes the code more intuitive and easier to read. For example, overloading the + operator allows two objects to be added together with a syntax similar to the addition of integers, rather than using a method name like "Add" or "Sum".
+
+# what are differences of copy constructor and copy assignment
+
+- In C++, a copy constructor and a copy assignment operator are both used to copy objects. However, there are some differences between them:
+
+1. **Copy constructor:** A copy constructor is a special constructor that is used to create a new object as a copy of an existing object. It is called when an object is initialized with another object of the same type. The copy constructor takes a reference to the object to be copied and creates a new object with the same values. It is used for creating a new object from an existing object.
+2. **Copy assignment:** A copy assignment operator is a member function that is used to copy the values of one object to another object of the same type. It is called when an existing object is assigned a new value. The copy assignment operator takes a reference to the object to be copied and assigns the values to the new object. It is used for assigning a new value to an existing object.
+
+- In summary, the main difference between a copy constructor and a copy assignment operator is that a copy constructor is used to create a new object from an existing object, while a copy assignment operator is used to assign a new value to an existing object.
+
+# what is move semantics
+
+- Move semantics in C++ is a feature introduced in C++11 to optimize the performance of object copies. When an object is copied, its data is duplicated to a new object, which can be expensive for large objects or when many copies are made. Move semantics allow objects to be "moved" from one location to another, without duplicating their data.
+
+- In C++, move semantics are implemented using rvalue references, which allow objects to be bound to temporary values that are about to be destroyed. Move constructors and move assignment operators are defined using rvalue references to take advantage of this feature. When an object is moved, its data is simply transferred to the new object, rather than being duplicated.
+
+- Move semantics are particularly useful for objects that manage large amounts of memory, such as containers or smart pointers. By allowing objects to be moved instead of copied, move semantics can greatly improve the performance of C++ programs.
+
+# what move function is doing
+
+- In C++, the std::move() function is used to indicate that an object can be moved from its current location to a new location without making a copy. This function is often used in conjunction with move constructors and move assignment operators to transfer ownership of resources from one object to another more efficiently than copying them.
+- The std::move() function takes an rvalue reference to an object and returns an rvalue reference to that same object. It does not actually move the object itself, but rather converts it into an rvalue that can be used by move constructors and move assignment operators.
+
+**For example, suppose we have a class MyClass that has a move constructor and a move assignment operator defined:**
+
+```CPP
+class MyClass {
+public:
+    // Move constructor
+    MyClass(MyClass&& other) noexcept {
+        // Move resources from other to this
+    }
+
+    // Move assignment operator
+    MyClass& operator=(MyClass&& other) noexcept {
+        // Move resources from other to this
+        return *this;
+    }
+};
+
+```
+
+**We can use the std::move() function to transfer ownership of an object of MyClass from one location to another:**
+
+```CPP
+MyClass obj1;
+// ...
+
+MyClass obj2 = std::move(obj1);  // Uses move constructor
+// ...
+
+MyClass obj3;
+// ...
+
+obj3 = std::move(obj2);  // Uses move assignment operator
+
+```
+
+> In the example above, std::move(obj1) returns an rvalue reference to obj1, which is then used to construct obj2 using the move constructor. Similarly, std::move(obj2) returns an rvalue reference to obj2, which is then used to move-assign obj3.
+
+# What is delegating constructor
+
+- Delegating constructors are a feature introduced in C++11 that allows constructors to call other constructors within the same class. This can be useful when you have multiple constructors that share common initialization logic, so instead of duplicating the code in each constructor, you can delegate to a single constructor that performs the shared initialization.
+
+- To use a delegating constructor, you simply call another constructor in the constructor initialization list, like this:
+
+```CPP
+class MyClass {
+public:
+    MyClass() : MyClass(0, 0) {} // delegating constructor
+
+    MyClass(int a, int b) : x(a), y(b) {} // non-delegating constructor
+
+private:
+    int x, y;
+};
+
+```
+
+> In this example, the default constructor delegates to the non-default constructor by calling MyClass(0, 0). This allows you to avoid duplicating the initialization logic in both constructors.
+
+# What is conversion constructor
+
+- In C++, a conversion constructor is a constructor that is used to implicitly convert one type to another. It is a type of constructor that accepts a single argument of a different type, allowing an object of one class to be created from an object of another class.
 
 
+- For example, consider a class MyString that represents a string of characters. We can define a conversion constructor that takes a C-style string (a null-terminated array of characters) as input, and constructs a MyString object from it. The code for this conversion constructor might look like this:
+
+```CPP
+class MyString {
+public:
+    MyString(const char* str) {
+        // implementation details
+    }
+};
+
+```
+> With this conversion constructor, we can create a MyString object from a C-style string as follows:
+
+```CPP
+const char* cstr = "hello world";
+MyString mystr = cstr;  // implicitly convert C-style string to MyString object
+
+```
+> In this example, the conversion constructor allows us to create a MyString object from a C-style string without having to explicitly call the constructor.
+
+# What is copy elision
+
+- Copy elision is an optimization technique used by compilers in C++ to optimize the copy and move operations during function returns and variable initialization. It involves eliminating unnecessary copy and move operations by avoiding the creation of temporary objects.
 
 
+- Copy elision occurs when the source object is constructed directly in the memory occupied by the target object. It allows the compiler to avoid creating a temporary object and then copying or moving its contents to the target object. This optimization can significantly improve performance and reduce memory usage in some cases.
 
+- For example, consider the following code:
 
+```CPP
+#include <iostream>
+#include <vector>
 
+std::vector<int> createVector()
+{
+    std::vector<int> v{1, 2, 3, 4, 5};
+    return v;
+}
 
+int main()
+{
+    std::vector<int> v1 = createVector();
+    std::vector<int> v2{createVector()};
+}
 
+```
+> In the above code, createVector() returns a std::vector<int> object. When we assign the result of createVector() to v1, a copy of the temporary object returned by createVector() is made. However, when we initialize v2 with createVector(), copy elision takes place, and no copy operation is performed.
 
+- Copy elision is supported by all modern C++ compilers, and it is enabled by default at optimization levels -O1, -O2, and -O3. However, it is important to note that copy elision is not guaranteed by the C++ standard, and some cases may still require explicit use of move constructors and move assignment operators to achieve optimal performance.
 
-
-
-
-
-
-
-
-
-
-
-
+# what is inline variable
 
 
 
