@@ -829,6 +829,9 @@ int main() {
     
     
     
+# what is Pimpl idiom
+    
+    - Pimpl (Pointer to implementation) is an idiom in C++ used for implementing the opaque pointer pattern. The main idea is to separate the implementation of a class from its interface by hiding the details of the implementation in a separate class or structure. This can make it easier to change the implementation of a class without affecting the code that uses it.
     
     
     
