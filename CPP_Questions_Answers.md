@@ -760,6 +760,9 @@ MyString mystr = cstr;  // implicitly convert C-style string to MyString object
 ```
 > In this example, the conversion constructor allows us to create a MyString object from a C-style string without having to explicitly call the constructor.
 
+
+
+
 # What is copy elision
 
 - Copy elision is an optimization technique used by compilers in C++ to optimize the copy and move operations during function returns and variable initialization. It involves eliminating unnecessary copy and move operations by avoiding the creation of temporary objects.
@@ -786,9 +789,12 @@ int main()
 }
 
 ```
-> In the above code, createVector() returns a std::vector<int> object. When we assign the result of createVector() to v1, a copy of the temporary object returned by createVector() is made. However, when we initialize v2 with createVector(), copy elision takes place, and no copy operation is performed.
+> In the above code, createVector() returns a std::vector<int object. When we assign the result of createVector() to v1, a copy of the temporary object returned by createVector() is made. However, when we initialize v2 with createVector(), copy elision takes place, and no copy operation is performed.
 
 - Copy elision is supported by all modern C++ compilers, and it is enabled by default at optimization levels -O1, -O2, and -O3. However, it is important to note that copy elision is not guaranteed by the C++ standard, and some cases may still require explicit use of move constructors and move assignment operators to achieve optimal performance.
+
+
+
 
 # what is inline variable
 
@@ -826,23 +832,262 @@ int main() {
 - The friend keyword is often used when implementing operator overloading in C++, allowing non-member functions to have access to private and protected members of a class. It can also be used when implementing the Pimpl idiom, where a class exposes only its public interface and hides its implementation details in a separate class that is declared as a friend of the public class.
 
 - It is worth noting that using the friend keyword can potentially compromise the encapsulation and data hiding features of object-oriented programming, so it should be used judiciously and only when necessary.
-    
-    
-    
+
 # what is Pimpl idiom
-    
-    - Pimpl (Pointer to implementation) is an idiom in C++ used for implementing the opaque pointer pattern. The main idea is to separate the implementation of a class from its interface by hiding the details of the implementation in a separate class or structure. This can make it easier to change the implementation of a class without affecting the code that uses it.
-    
-    
-    
-    
-    
-    
+
+- Pimpl (Pointer to implementation) is an idiom in C++ used for implementing the opaque pointer pattern. The main idea is to separate the implementation of a class from its interface by hiding the details of the implementation in a separate class or structure. This can make it easier to change the implementation of a class without affecting the code that uses it.
+
+- In Pimpl idiom, the public interface of a class contains only the member function declarations, and the private implementation details are hidden behind a pointer to an implementation class. The implementation class is defined in the .cpp file, and its members are not visible to the client code. This way, any changes made to the implementation class will not require recompiling the client code.
+- Pimpl idiom also allows for greater encapsulation, as it enables hiding the private members and functions of a class from its users. This can be useful when working with complex classes that have a lot of private data and functions.
+
+# what is friend keyword
+
+- In C++, the friend keyword is used to grant access to private or protected members of a class to another class or function. When a function or class is declared as a friend of a class, it can access the private and protected members of that class, as if they were its own members. This allows for more flexible and granular control over access to a class's data and methods, while still allowing selected external entities to manipulate its state.
+
+- It's worth noting that using friend can break encapsulation and make code harder to maintain, so it should be used judiciously and with care.
+
+# what is operator overloading
+
+- Operator overloading in C++ allows you to define the behavior of operators (+, -, *, /, etc.) when they are used with user-defined types (classes or structures). With operator overloading, you can use operators on objects just like you do with built-in data types like integers and floating-point numbers.
+
+- For example, you can overload the '+' operator to allow addition of two objects of a custom class. Here's an example:
+
+```CPP
+class Vector {
+public:
+    Vector operator+(const Vector& other) const {
+        Vector result;
+        result.x = x + other.x;
+        result.y = y + other.y;
+        return result;
+    }
+
+private:
+    int x, y;
+};
+
+int main() {
+    Vector v1 = { 1, 2 };
+    Vector v2 = { 3, 4 };
+    Vector v3 = v1 + v2; // calls the overloaded '+' operator
+}
+
+```
+> In this example, the operator+ function is overloaded for the Vector class, allowing you to use the + operator to add two Vector objects together.
+
+
+# Why operator overloading is exist
+
+- Operator overloading exists in C++ to allow programmers to use the built-in operators such as +, -, *, /, etc. to work with user-defined types, just as they work with fundamental types like integers and floating-point numbers. This makes the code more readable and intuitive. For example, if we have a class that represents a complex number, we can overload the + operator so that we can add two complex numbers using the same syntax as we use for adding two integers.
+
+
+- In addition, operator overloading can also improve the performance of code in some cases by allowing the compiler to generate more optimized code for a particular operation.
+
+# How can we add two complex numbers if operator overloading is not exist
+
+```CPP
+#include <iostream>
+
+struct Complex {
+    double real, imag;
+
+    Complex(double real, double imag) : real(real), imag(imag) {}
+
+    friend Complex add(const Complex& c1, const Complex& c2) {
+        return Complex(c1.real + c2.real, c1.imag + c2.imag);
+    }
+};
+
+int main() {
+    Complex c1(1.0, 2.0);
+    Complex c2(2.0, 3.0);
+
+    Complex c3 = add(c1, c2);
+
+    std::cout << "c1 + c2 = " << c3.real << " + " << c3.imag << "i" << std::endl;
+
+    return 0;
+}
+
+```
+
+> As you can see, we have defined a add() function that takes two Complex objects as arguments and returns a Complex object that is the sum of the two input objects. In the main() function, we use this function to add two complex numbers.
+
+# what is user defined conversion
+- User-defined conversions in C++ allow you to define custom type conversions between types. These conversions can be implicitly or explicitly invoked.
+
+- There are two types of user-defined conversions in C++:
+
+1. **Conversion constructors:** These are constructors that can accept a single argument and are used to convert one type to another.
+
+- Here's an example of a conversion constructor that converts a double to an integer:
+
+
+```CPP
+class MyInt {
+public:
+    MyInt(double d) {
+        value = static_cast<int>(d);
+    }
+private:
+    int value;
+};
+
+```
+- With this conversion constructor, you can create an instance of MyInt from a double:
+
+
+```CPP
+MyInt myint = 3.14;
+
+```
+
+- **Conversion operators:** These are member functions that allow you to convert an object of one class to another class.
+
+- Here's an example of a conversion operator that converts a MyInt object to an int:
+
+
+```CPP
+class MyInt {
+public:
+    operator int() const {
+        return value;
+    }
+private:
+    int value;
+};
+
+```
+
+- With this conversion operator, you can convert a MyInt object to an int:
+
+
+```CPP
+MyInt myint(42);
+int i = myint;
+
+```
+
+# how to convert a class type object with user defined conversion
+
+- To convert a class type object using user-defined conversion, you need to define a conversion function in your class. The conversion function should have the following properties:
+
+- It must be a member function of the class you want to convert from
+- It must not have a return type, but it should return a value of the desired type
+- It should not take any arguments, except possibly for a const reference to the current object
+
+**Here's an example of a class with a conversion function that converts the object to an integer:**
+
+
+```CPP
+class MyClass {
+public:
+  operator int() const {
+    return myInt;
+  }
+
+private:
+  int myInt;
+};
+
+```
+> In this example, the operator int() function is the conversion function. It takes no arguments and returns an integer, which is the type that we want to convert to. Inside the function, we simply return the value of myInt, which is a member variable of the class.
+
+- Once you've defined the conversion function, you can use it to convert objects of your class to the desired type. For example:
+
+```CPP
+MyClass obj;
+int i = obj;  // convert obj to an int using the conversion function
+
+```
+
+> In this example, obj is an object of type MyClass, but we're able to assign it to an int variable i because the conversion function allows us to convert a MyClass object to an int.
+
+
+# what is conversion operator
+
+- A conversion operator is a special member function in C++ that enables a class to convert to a specified type. It allows the class to be used in expressions where the target type is expected, by implicitly converting the object to that type.
+
+- In other words, a conversion operator defines a way for a user-defined class to be implicitly converted to another type. The syntax for defining a conversion operator is as follows:
+
+
+```CPP
+operator type() const;
+
+```
+
+- Here, type is the type to which the class should be converted. The const qualifier at the end of the function declaration indicates that the function will not modify the object being converted.
+
+- Conversion operators can be useful in situations where you want to use your own class types with other library functions or operators that expect built-in types. For example, you might define a class to represent a physical quantity, such as length or mass, and use a conversion operator to convert the object to a built-in type like double. This would allow you to perform arithmetic operations with the physical quantity class using the same syntax as for built-in types.
+
+# what is unique_ptr
+
+- std::unique_ptr is a smart pointer provided by the C++ Standard Library that provides automatic memory management for dynamically allocated objects. It is used to manage resources that need to be deallocated explicitly, such as dynamically allocated objects or resources acquired from an operating system call.
+
+- A unique_ptr is unique in the sense that it is the sole owner of the pointer it manages, meaning there is no other pointer pointing to the same memory. When a unique_ptr is destroyed, it automatically releases the memory it owns, thereby avoiding memory leaks.
+
+- unique_ptr is implemented as a template class that wraps a pointer to an object and provides a set of member functions to manage that object. It is non-copyable but can be moved, which means that ownership of the underlying resource can be transferred to another unique_ptr.
+
+- Here is an example of using unique_ptr to manage a dynamically allocated object:
+
+
+```CPP
+#include <memory>
+#include <iostream>
+
+int main() {
+    std::unique_ptr<int> myInt(new int(42));
+    std::cout << "myInt points to " << *myInt << std::endl;
+    // when myInt goes out of scope, it will automatically release the memory it owns
+    return 0;
+}
+
+```
+
+# is unique_ptr can be moved only to an other unique_ptr
+
+- No, a unique_ptr can also be moved to an std::shared_ptr or an std::weak_ptr. However, moving a unique_ptr to any other type of pointer is not allowed and will result in a compiler error. The reason for this is that the unique ownership semantics of a unique_ptr are not compatible with shared ownership semantics of std::shared_ptr or raw pointers.
+
+# what are the namespaces of standart library std
+
+- The standard library of C++ defines many functions and types in the std namespace. Some of the commonly used namespaces in the standard library include:
+
+
+- std::chrono: for time-related utilities
+- std::filesystem: for file and directory operations
+- std::iostreams: for input and output streams
+- std::algorithm: for algorithms such as sorting, searching, etc.
+- std::string: for string operations
+- std::vector: for dynamic arrays
+- std::map: for key-value mappings
+- std::set: for sets of unique elements
+- std::thread: for multithreading
+- And many more.
+
+# what is "cout"
+
+- cout is an object of the std::ostream class in the std namespace. It is used to output data to the console or other output streams. It is commonly used in C++ programs to display the results of a program or to provide information to the user. The std::cout object is defined in the <iostream header file, which is part of the C++ standard library.
+
+# How "cout" object output data to the console
+
+- In C++, the cout object is an instance of the ostream class, which is defined in the <iostream> header. The ostream class provides methods for outputting formatted data to various output devices, including the console. When you call the << operator on the cout object, you are actually calling the operator<< method of the ostream class, passing in the data that you want to output as a parameter. The operator<< method then writes the data to the console using various formatting options, such as padding and precision.
+
+# what is "using" decleration
+
     
     
 
-    
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
